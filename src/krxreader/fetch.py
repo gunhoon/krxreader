@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 
 
-def get_main_page():
+def get_main_page(lang='ko_KR'):
     """MAIN 페이지
 
     :return: str
@@ -11,13 +11,13 @@ def get_main_page():
     """
     url = 'http://data.krx.co.kr/contents/MDC/MAIN/main/index.cmd'
 
-    res = requests.get(url=url)
+    res = requests.get(url=url, cookies={'lang': lang})
     html = res.text
 
     return html
 
 
-def get_mdi_page(menu_id):
+def get_mdi_page(menu_id, lang='ko_KR'):
     """MDI 통계 화면 페이지
 
     :param:
@@ -34,7 +34,7 @@ def get_mdi_page(menu_id):
     """
     url = f'http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId={menu_id}'
 
-    res = requests.get(url=url)
+    res = requests.get(url=url, cookies={'lang': lang})
     html = res.text
 
     return html

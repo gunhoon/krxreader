@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ._krx import get_json_data
+from .fetch import get_json_data
 
 
 class KrxStock:

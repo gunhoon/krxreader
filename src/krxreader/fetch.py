@@ -26,31 +26,3 @@ def download_csv(data):
     csv = r.content.decode(encoding='euc_kr')
 
     return csv
-
-
-if __name__ == '__main__':
-    params = {
-        'bld': 'dbms/MDC/STAT/standard/MDCSTAT00101',
-        'locale': 'ko_KR',
-        'idxIndMidclssCd': '01',
-        'trdDd': '20220822',
-        'share': '2',
-        'money': '3',
-        'csvxls_isNo': 'false'
-    }
-
-    d = get_json_data(params)
-
-    print('=======================================')
-    print(type(d))
-    print(d)
-
-    params['name'] = 'fileDown'
-    params['url'] = params['bld']
-    del params['bld']
-
-    c = download_csv(params)
-
-    print('=======================================')
-    print(type(c))
-    print(c)

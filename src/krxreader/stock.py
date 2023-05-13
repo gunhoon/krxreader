@@ -1,56 +1,48 @@
-import pandas as pd
-
-from .fetch import get_json_data
+from .base import KrxBase
 
 
-class KrxStock:
-    def __init__(self, date, market='ALL', share='1', money='1'):
-        self.date = date.strftime('%Y%m%d')
-        self.market = market  # 'ALL': 전체, 'STK': KOSPI, 'KSQ': KOSDAQ, 'KNX': KONEX
-        self.share = share  # '1':주, '2':천주, '3':백만주
-        self.money = money  # '1':원, '2':천원, '3':백만원, '4':십억원
+class Stock(KrxBase):
+    def __init__(self, date, start=None, end=None, market='ALL', share='1', money='1'):
+        super().__init__()
 
-        self.locale = 'ko_KR'
-        self.csvxls_is_no = 'false'
+        self._date = date
+        self._start = start
+        self._end = end
+        # 'ALL': 전체, 'STK': KOSPI, 'KSQ': KOSDAQ, 'KNX': KONEX
+        self._market = market
+        # '1':주, '2':천주, '3':백만주
+        self._share = share
+        # '1':원, '2':천원, '3':백만원, '4':십억원
+        self._money = money
 
-    @staticmethod
-    def get_output(params):
-        dic = get_json_data(params)
-
-        return pd.DataFrame(dic['OutBlock_1'])
-
-    def s12001(self):
-        """[12001] 전종목 시세
+    def stock_price(self):
+        """[12001] 주식 > 종목시세 > 전종목 시세
         :return:
         """
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01501'
 
         params = {
             'bld': bld,
-            'locale': self.locale,
-            'mktId': self.market,
-            'trdDd': self.date,
-            'share': self.share,
-            'money': self.money,
-            'csvxls_isNo': self.csvxls_is_no
+            'locale': self._locale,
+            'mktId': self._market,
+            'trdDd': self._date,
+            'share': self._share,
+            'money': self._money
         }
-        df = self.get_output(params)
 
-        return df
+        return self.fetch_data(params)
 
-    def s12005(self):
-        """[12005] 전종목 기본정보
+    def all_listed_issues(self):
+        """[12005] 주식 > 종목정보 > 전종목 기본정보
         :return:
         """
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01901'
 
         params = {
             'bld': bld,
-            'locale': self.locale,
-            'mktId': self.market,
-            'share': self.share,
-            'csvxls_isNo': self.csvxls_is_no
+            'locale': self._locale,
+            'mktId': self._market,
+            'share': self._share
         }
-        df = self.get_output(params)
 
-        return df
+        return self.fetch_data(params)

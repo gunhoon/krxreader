@@ -3,11 +3,8 @@ from .base import KrxBase
 
 class Stock(KrxBase):
     def __init__(self, date, start=None, end=None, market='ALL', share='1', money='1'):
-        super().__init__()
+        super().__init__(date, start, end)
 
-        self._date = date
-        self._start = start
-        self._end = end
         # 'ALL': 전체, 'STK': KOSPI, 'KSQ': KOSDAQ, 'KNX': KONEX
         self._market = market
         # '1':주, '2':천주, '3':백만주
@@ -22,15 +19,13 @@ class Stock(KrxBase):
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01501'
 
         params = {
-            'bld': bld,
-            'locale': self._locale,
             'mktId': self._market,
             'trdDd': self._date,
             'share': self._share,
             'money': self._money
         }
 
-        return self.fetch_data(params)
+        return self.fetch_data(bld, params)
 
     def all_listed_issues(self):
         """[12005] 주식 > 종목정보 > 전종목 기본정보
@@ -39,10 +34,8 @@ class Stock(KrxBase):
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01901'
 
         params = {
-            'bld': bld,
-            'locale': self._locale,
             'mktId': self._market,
             'share': self._share
         }
 
-        return self.fetch_data(params)
+        return self.fetch_data(bld, params)

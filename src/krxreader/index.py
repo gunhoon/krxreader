@@ -5,16 +5,24 @@ class StockIndex(KrxBase):
     def __init__(self, date, start=None, end=None, sector='01', share='2', money='3'):
         super().__init__(date, start, end)
 
-        # '01': KRX, '02': KOSPI, '03': KOSDAQ, '04': 테마
+        # '01': KRX
+        # '02': KOSPI
+        # '03': KOSDAQ
+        # '04': 테마
         self._sector = sector
-        # '1':주, '2':천주, '3':백만주
+        # '1': 주
+        # '2': 천주
+        # '3': 백만주
         self._share = share
-        # '1':원, '2':천원, '3':백만원, '4':십억원
+        # '1': 원
+        # '2': 천원
+        # '3': 백만원
+        # '4': 십억원
         self._money = money
 
     def index_price(self):
         """[11001] 지수 > 주가지수 > 전체지수 시세
-        :return:
+        :return: list
         """
         bld = 'dbms/MDC/STAT/standard/MDCSTAT00101'
 
@@ -29,7 +37,7 @@ class StockIndex(KrxBase):
 
     def index_price_change(self):
         """[11002] 지수 > 주가지수 > 전체지수 등락률
-        :return:
+        :return: list
         """
         bld = 'dbms/MDC/STAT/standard/MDCSTAT00201'
 

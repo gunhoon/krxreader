@@ -25,13 +25,25 @@ def params():
 
 
 def test_fetch_json(bld, params):
+    payload = {
+        'bld': bld,
+        'locale': 'ko_KR'
+    }
+    payload.update(params)
+    payload.update({
+        'csvxls_isNo': 'false'
+    })
+
     base = KrxBase()
 
-    json = base.fetch_json(bld, params)
-    data = json['OutBlock_1']
+    data_list = base.fetch_json(payload)
+    keys = data_list[0].keys()
 
-    assert data[0]['ISU_SRT_CD'] == '060310'
-    assert data[0]['TDD_CLSPRC'] == '2,290'
+    data = [list(item.values()) for item in data_list]
+    data.insert(0, list(keys))
+
+    assert data[1][0] == '060310'
+    assert data[1][5] == '2,290'
 
 
 def test_fetch_data(bld, params):

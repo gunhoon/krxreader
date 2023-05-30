@@ -15,6 +15,7 @@ class KrxBase:
     :param start: 조회기간
     :param end: 조회기간
     """
+
     def __init__(
             self,
             date: str | None = None,
@@ -41,19 +42,16 @@ class KrxBase:
         self._locale = 'ko_KR'
         self._csvxls_is_no = 'false'
 
-    def fetch_json(self, bld: str, params: dict) -> dict:
-        payload = {
-            'bld': bld,
-            'locale': self._locale
-        }
-        payload.update(params)
-        payload.update({
-            'csvxls_isNo': self._csvxls_is_no
-        })
-
+    def fetch_json(self, payload: dict) -> list[dict]:
         logging.debug(payload)
 
-        data = get_json_data(payload)
+        json = get_json_data(payload)
+        keys = list(json.keys())
+
+        key = keys[1] if keys[0] == 'CURRENT_DATETIME' else keys[0]
+        logging.info(f'{key}')
+
+        data = json[key]
 
         return data
 

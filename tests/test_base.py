@@ -53,3 +53,17 @@ def test_fetch_data(bld, params):
 
     assert data[1][0] == '060310'
     assert data[1][4] == '2290'
+
+
+def test_search_item_stock():
+    base = KrxBase()
+    item = base.search_item('stock', '삼성전자')
+
+    assert item == ('삼성전자', '005930', 'KR7005930003')
+
+
+def test_search_item_stock_index():
+    base = KrxBase()
+    item = base.search_item('stock_index', 'KRX 300')
+
+    assert item == ('KRX 300', '300', '5')

@@ -54,9 +54,25 @@ class StockIndex(KrxBase):
 
         return self.fetch_data(bld, params)
 
-    def price_by_index(self) -> list[list]:
+    def price_by_index(self, index_code: str) -> list[list]:
         """[11003] 통계 > 기본 통계 > 지수 > 주가지수 > 개별지수 시세 추이"""
-        pass
+
+        (item_name, item_code, full_code) = self.search_item('stock_index', index_code)
+
+        bld = 'dbms/MDC/STAT/standard/MDCSTAT00301'
+        params = {
+            'tboxindIdx_finder_equidx0_0': item_name,
+            'indIdx': full_code,
+            'indIdx2': item_code,
+            'codeNmindIdx_finder_equidx0_0': item_name,
+            'param1indIdx_finder_equidx0_0': '',
+            'strtDd': self._start,
+            'endDd': self._end,
+            'share': self._share,
+            'money': self._money
+        }
+
+        return self.fetch_data(bld, params)
 
     def all_indices(self) -> list[list]:
         """[11004] 통계 > 기본 통계 > 지수 > 주가지수 > 전체지수 기본정보"""

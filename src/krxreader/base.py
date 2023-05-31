@@ -74,3 +74,33 @@ class KrxBase:
         data = list(reader)
 
         return data
+
+    def search_item(self, search_type: str, search_text: str = '') -> tuple:
+        """검색"""
+
+        payload = {
+            # StockIndex: 주가지수 검색
+            'stock_index': {
+                'locale': self._locale,
+                'mktsel': '1',  # '1': 전체
+                'searchText': search_text,
+                'bld': 'dbms/comm/finder/finder_equidx'
+            },
+            # Stock: 주식 종목 검색
+            'stock': {
+                'locale': self._locale,
+                'mktsel': 'ALL',
+                'typeNo': '0',
+                'searchText': search_text,
+                'bld': 'dbms/comm/finder/finder_stkisu'
+            }
+        }
+        logging.debug(payload[search_type])
+
+        json = self.fetch_json(payload[search_type])
+
+        return (
+            json[0]['codeName'],
+            json[0]['short_code'],
+            json[0]['full_code']
+        )

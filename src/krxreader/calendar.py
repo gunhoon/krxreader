@@ -1,4 +1,7 @@
 import datetime
+import os.path
+
+from .fetch import holiday_info
 
 
 def now() -> datetime.datetime:
@@ -22,12 +25,22 @@ def is_weekend(dt: datetime.datetime) -> bool:
 
 
 def is_holiday(dt: datetime.datetime) -> bool:
-    """Return whether it is holiday or not.
+    """Return whether it is holiday or not."""
 
-    NotImplemented
-    """
+    year = dt.year
+    date = dt.strftime('%Y-%m-%d')
+    file = os.path.join(os.path.dirname(__file__), 'data', f'holiday_{year}.dat')
 
-    return False
+    try:
+        with open(file, encoding='utf-8') as f:
+            holiday = f.read().splitlines()
+    except OSError as e:
+        holiday = holiday_info(year)
+
+    if date in holiday:
+        return True
+    else:
+        return False
 
 
 def is_closing_day(dt: datetime.datetime) -> bool:

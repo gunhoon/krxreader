@@ -1,8 +1,23 @@
 from datetime import datetime
 
+from krxreader.calendar import is_holiday
 from krxreader.calendar import is_closing_day
 from krxreader.calendar import is_trading_day
 from krxreader.calendar import trading_date
+
+
+def test_is_holiday():
+    # 공휴일
+    dt1 = datetime.fromisoformat('2022-06-06 00:00:00.501235+09:00')
+    dt2 = datetime.fromisoformat('2023-06-06 09:00:00.501235+09:00')
+    dt3 = datetime.fromisoformat('2024-06-06 23:59:59.501235+09:00')
+    # 평일
+    dt4 = datetime.fromisoformat('2023-06-07 09:00:00.501235+09:00')
+
+    assert is_holiday(dt1) is True
+    assert is_holiday(dt2) is True
+    assert is_holiday(dt3) is True
+    assert is_holiday(dt4) is False
 
 
 def test_is_closing_day():

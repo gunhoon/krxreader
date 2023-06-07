@@ -49,7 +49,7 @@ def holiday_info(year: int) -> list:
     return holiday
 
 
-def get_json_data(payload: dict) -> list:
+def get_json_data(payload: dict) -> list[dict]:
     url = 'http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd'
 
     r = requests.post(url=url, data=payload)

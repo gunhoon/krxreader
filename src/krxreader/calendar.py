@@ -1,7 +1,21 @@
 import datetime
 import os.path
 
-from .fetch import holiday_info
+from . import fetch
+
+
+def holiday_info(year: int) -> list:
+    """Return holiday info from a local file."""
+
+    file = os.path.join(os.path.dirname(__file__), 'data', f'holiday_{year}.dat')
+
+    try:
+        with open(file, encoding='utf-8') as f:
+            holiday = f.read().splitlines()
+    except OSError:
+        holiday = list()
+
+    return holiday
 
 
 def now() -> datetime.datetime:
@@ -29,13 +43,10 @@ def is_holiday(dt: datetime.datetime) -> bool:
 
     year = dt.year
     date = dt.strftime('%Y-%m-%d')
-    file = os.path.join(os.path.dirname(__file__), 'data', f'holiday_{year}.dat')
 
-    try:
-        with open(file, encoding='utf-8') as f:
-            holiday = f.read().splitlines()
-    except OSError as e:
-        holiday = holiday_info(year)
+    holiday = holiday_info(year)
+    if len(holiday) == 0:
+        holiday = fetch.holiday_info(year)
 
     if date in holiday:
         return True

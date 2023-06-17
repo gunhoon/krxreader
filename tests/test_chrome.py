@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from krxreader.chrome import major_version
 from krxreader.chrome import release_schedule
+from krxreader.chrome import unified_platform
+from krxreader.chrome import major_version
 from krxreader.chrome import user_agent
 
 
@@ -16,6 +17,10 @@ def test_release_schedule():
     for item in schedule:
         dt = datetime.strptime(item[0], '%b %d, %Y')
         assert type(dt) is datetime
+
+
+def test_unified_platform():
+    assert unified_platform() == 'Macintosh; Intel Mac OS X 10_15_7'
 
 
 def test_major_version():
@@ -58,3 +63,12 @@ def test_user_agent():
 
     result = user_agent()
     assert result == agent.format(major_version())
+
+
+def test_maintenance():
+    """If this test fails, update release_schedule() function."""
+
+    schedule = release_schedule()
+    latest_version = schedule[0][1]
+
+    assert major_version() != latest_version

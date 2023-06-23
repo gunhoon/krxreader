@@ -38,6 +38,7 @@ def test_common_headers():
         assert headers['referer'] == referer
 
 
+@pytest.mark.skipif(True, reason='requires http request')
 def test_holiday_info():
     info_list = holiday_info(2023)
 
@@ -46,6 +47,7 @@ def test_holiday_info():
     assert info_list[13] == '2023-12-29'
 
 
+@pytest.mark.skipif(False, reason='requires http request')
 def test_get_json_data(payload):
     data = get_json_data(payload)
 
@@ -53,6 +55,7 @@ def test_get_json_data(payload):
     assert data[0]['CLSPRC_IDX'] == '1,573.77'
 
 
+@pytest.mark.skipif(False, reason='requires http request')
 def test_download_csv(payload):
     bld = payload.pop('bld')
     payload['name'] = 'fileDown'

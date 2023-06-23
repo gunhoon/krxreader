@@ -19,8 +19,7 @@ def common_headers(referer: str | None = None) -> dict:
 
 
 def holiday_info(year: int) -> list:
-    referer = 'http://open.krx.co.kr/contents/MKD/01/0110/01100305/MKD01100305.jsp'
-    headers = common_headers(referer=referer)
+    headers = common_headers()
 
     # 1. Generate OTP
     otp_url = 'http://open.krx.co.kr/contents/COM/GenerateOTP.jspx'
@@ -58,7 +57,7 @@ def get_json_data(payload: dict) -> list[dict]:
     keys = list(json)
     k = keys[1] if keys[0] == 'CURRENT_DATETIME' else keys[0]
 
-    if k != 'output' and k != 'OutBlock_1':
+    if k != 'output' and k != 'OutBlock_1' and k != 'block1':
         raise NotImplementedError(k)
 
     return json[k]

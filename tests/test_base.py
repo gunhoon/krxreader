@@ -1,6 +1,51 @@
+import datetime
+
 import pytest
 
 from krxreader.base import KrxBase
+from krxreader.calendar import is_closing_day
+from krxreader.calendar import now
+
+
+def test_date():
+    base = KrxBase(end='20230623')
+    assert base._start == '20230615'
+
+    base = KrxBase(end='20230607')
+    assert base._start == '20230530'
+
+    base = KrxBase(end='20230605')
+    assert base._start == '20230526'
+
+    base = KrxBase(end='20230602')
+    assert base._start == '20230525'
+
+    base = KrxBase(end='20230601')
+    assert base._start == '20230524'
+
+
+def test_date_now():
+    dt = now()
+
+    if dt.hour < 9:
+        dt = dt - datetime.timedelta(days=1)
+    while is_closing_day(dt):
+        dt = dt - datetime.timedelta(days=1)
+
+    date = dt.strftime('%Y%m%d')
+
+    dt = dt - datetime.timedelta(days=8)
+    while is_closing_day(dt):
+        dt = dt - datetime.timedelta(days=1)
+
+    start = dt.strftime('%Y%m%d')
+
+    print(f'{start} ~ {date}')
+
+    base = KrxBase()
+    assert base._date == date
+    assert base._end == date
+    assert base._start == start
 
 
 @pytest.fixture

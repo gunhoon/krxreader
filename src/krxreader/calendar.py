@@ -69,17 +69,17 @@ def is_trading_day(dt: datetime.datetime) -> bool:
     return not is_closing_day(dt)
 
 
-def trading_date(dt: datetime.datetime = None, open_time: int = 9) -> str:
+def trading_date(dt: datetime.datetime = None, base_time: int = 0) -> str:
     """Return trading date
 
-    Return the previous date if it is before the trading open time(09:00)
-    or if it is the closing date.
+    Return the previous date if it is the closing date or if it is before
+    base_time. For example, the trading open time(ex. 09:00).
     """
     if dt is None:
         dt = now()
 
-    # Before the trading time
-    if dt.hour < open_time:
+    # Before the base time
+    if dt.hour < base_time:
         dt = dt - datetime.timedelta(days=1)
 
     while is_closing_day(dt):

@@ -14,13 +14,17 @@ class KrxBase:
     :param date: 조회일자
     :param start: 조회기간
     :param end: 조회기간
+    :param open_time: 날짜 계산의 기준 시간
+    :param start_days: start 의 default 값
     """
 
     def __init__(
             self,
             date: str | None = None,
             start: str | None = None,
-            end: str | None = None
+            end: str | None = None,
+            open_time: int = 9,
+            start_days: int = 8
     ):
         self._date = date
         self._start = start
@@ -29,15 +33,15 @@ class KrxBase:
         now_dt = now()
 
         if self._date is None:
-            self._date = trading_date(dt=now_dt)
+            self._date = trading_date(dt=now_dt, base_time=open_time)
 
         if self._end is None:
-            self._end = trading_date(dt=now_dt)
+            self._end = trading_date(dt=now_dt, base_time=open_time)
 
         if self._start is None:
             dt = datetime.datetime.strptime(self._end, '%Y%m%d')
-            dt = dt - datetime.timedelta(days=8)
-            self._start = dt.strftime('%Y%m%d')
+            dt = dt - datetime.timedelta(days=start_days)
+            self._start = trading_date(dt=dt, base_time=0)
 
         self._locale = 'ko_KR'
         self._csvxls_is_no = 'false'

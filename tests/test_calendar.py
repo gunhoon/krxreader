@@ -117,9 +117,12 @@ def test_trading_date():
     assert trading_date(dt1) == '20230519'
     assert trading_date(dt2) == '20230519'
     assert trading_date(dt3) == '20230519'
-    assert trading_date(dt1, open_time=24) == '20230519'
-    assert trading_date(dt2, open_time=24) == '20230519'
-    assert trading_date(dt3, open_time=24) == '20230519'
+    assert trading_date(dt1, base_time=9) == '20230519'
+    assert trading_date(dt2, base_time=9) == '20230519'
+    assert trading_date(dt3, base_time=9) == '20230519'
+    assert trading_date(dt1, base_time=24) == '20230519'
+    assert trading_date(dt2, base_time=24) == '20230519'
+    assert trading_date(dt3, base_time=24) == '20230519'
 
     # 일요일
     dt4 = datetime.fromisoformat('2023-05-21 08:59:59.501235+09:00')
@@ -129,21 +132,27 @@ def test_trading_date():
     assert trading_date(dt4) == '20230519'
     assert trading_date(dt5) == '20230519'
     assert trading_date(dt6) == '20230519'
-    assert trading_date(dt4, open_time=24) == '20230519'
-    assert trading_date(dt5, open_time=24) == '20230519'
-    assert trading_date(dt6, open_time=24) == '20230519'
+    assert trading_date(dt4, base_time=9) == '20230519'
+    assert trading_date(dt5, base_time=9) == '20230519'
+    assert trading_date(dt6, base_time=9) == '20230519'
+    assert trading_date(dt4, base_time=24) == '20230519'
+    assert trading_date(dt5, base_time=24) == '20230519'
+    assert trading_date(dt6, base_time=24) == '20230519'
 
     # 월요일
     dt7 = datetime.fromisoformat('2023-05-22 08:59:59.501235+09:00')
     dt8 = datetime.fromisoformat('2023-05-22 09:00:00.501235+09:00')
     dt9 = datetime.fromisoformat('2023-05-22 23:59:59.501235+09:00')
 
-    assert trading_date(dt7) == '20230519'
+    assert trading_date(dt7) == '20230522'
     assert trading_date(dt8) == '20230522'
     assert trading_date(dt9) == '20230522'
-    assert trading_date(dt7, open_time=24) == '20230519'
-    assert trading_date(dt8, open_time=24) == '20230519'
-    assert trading_date(dt9, open_time=24) == '20230519'
+    assert trading_date(dt7, base_time=9) == '20230519'
+    assert trading_date(dt8, base_time=9) == '20230522'
+    assert trading_date(dt9, base_time=9) == '20230522'
+    assert trading_date(dt7, base_time=24) == '20230519'
+    assert trading_date(dt8, base_time=24) == '20230519'
+    assert trading_date(dt9, base_time=24) == '20230519'
 
 
 @pytest.mark.skipif(False, reason='requires http request')

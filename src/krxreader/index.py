@@ -111,7 +111,7 @@ class BondIndex(KrxBase):
             start: str | None = None,
             end: str | None = None
     ):
-        super().__init__(date, start, end)
+        super().__init__(date, start, end, open_time=24, start_days=7)
 
     def index_price(self) -> list[list]:
         """[11008] 통계 > 기본 통계 > 지수 > 채권지수 > 전체지수 시세"""
@@ -123,7 +123,7 @@ class BondIndex(KrxBase):
 
         return self.fetch_data(bld, params)
 
-    def price_by_index(self, index_name: str = '') -> list[list]:
+    def price_by_index(self, index_name: str = 'KRX채권지수') -> list[list]:
         """[11009] 통계 > 기본 통계 > 지수 > 채권지수 > 개별지수 시세 추이"""
 
         index_table = {

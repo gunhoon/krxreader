@@ -8,8 +8,6 @@ class Stock(KrxBase):
     :param start: 조회기간
     :param end: 조회기간
     :param market: 'ALL': 전체, 'STK': KOSPI, 'KSQ': KOSDAQ, 'KNX': KONEX
-    :param share: '1': 주, '2': 천주, '3': 백만주
-    :param money: '1': 원, '2': 천원, '3': 백만원, '4': 십억원
     :param adjusted_price: 수정주가 적용
     """
 
@@ -19,16 +17,33 @@ class Stock(KrxBase):
             start: str | None = None,
             end: str | None = None,
             market: str = 'ALL',
-            share: str = '1',
-            money: str = '1',
             adjusted_price: bool = True
     ):
         super().__init__(date, start, end)
 
         self._market = market
-        self._share = share
-        self._money = money
         self._adjusted_price = adjusted_price
+        # '1': 주
+        # '2': 천주
+        # '3': 백만주
+        self._share = '1'
+        # '1': 원
+        # '2': 천원
+        # '3': 백만원
+        # '4': 십억원
+        self._money = '1'
+
+    def search_issue(self, issue_code: str) -> tuple:
+        """주식 종목 검색"""
+
+        bld = 'dbms/comm/finder/finder_stkisu'
+        params = {
+            'mktsel': 'ALL',
+            'typeNo': '0',
+            'searchText': issue_code
+        }
+
+        return self.search_item(bld, params)
 
     def stock_price(self) -> list[list]:
         """[12001] 통계 > 기본 통계 > 주식 > 종목시세 > 전종목 시세"""
@@ -73,7 +88,7 @@ class Stock(KrxBase):
     def price_by_issue(self, issue_code: str) -> list[list]:
         """[12003] 통계 > 기본 통계 > 주식 > 종목시세 > 개별종목 시세 추이"""
 
-        (item_name, item_code, full_code) = self.search_item('stock', issue_code)
+        (item_name, item_code, full_code) = self.search_issue(issue_code)
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01701'
         params = {

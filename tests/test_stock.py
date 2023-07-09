@@ -1,57 +1,81 @@
+import pytest
+
 from krxreader.stock import Stock
 
 
-def test_stock_price_all():
+@pytest.mark.skipif(True, reason='requires http request')
+def test_search_issue():
+    stock = Stock()
+
+    item = stock.search_issue('005930')
+    assert item == ('삼성전자', '005930', 'KR7005930003')
+
+    item = stock.search_issue('삼성전자')
+    assert item == ('삼성전자', '005930', 'KR7005930003')
+
+    item = stock.search_issue('035420')
+    assert item == ('NAVER', '035420', 'KR7035420009')
+
+    item = stock.search_issue('NAVER')
+    assert item == ('NAVER', '035420', 'KR7035420009')
+
+
+@pytest.mark.skipif(True, reason='requires http request')
+def test_stock_price():
     stock = Stock('20230519', market='ALL')
     data = stock.stock_price()
 
     assert data[1][0] == '060310'
-    assert data[1][4] == '2290'
+    assert data[1][5] == '2,290'
 
-
-def test_stock_price_stk():
     stock = Stock('20230519', market='STK')
     data = stock.stock_price()
 
     assert data[1][0] == '095570'
-    assert data[1][2] == '4445'
+    assert data[1][5] == '4,445'
 
-
-def test_stock_price_ksq():
     stock = Stock('20230519', market='KSQ')
     data = stock.stock_price()
 
     assert data[1][0] == '060310'
-    assert data[1][3] == '2290'
+    assert data[1][5] == '2,290'
 
-
-def test_stock_price_knx():
     stock = Stock('20230519', market='KNX')
     data = stock.stock_price()
 
     assert data[1][0] == '278990'
-    assert data[1][3] == '6800'
+    assert data[1][5] == '6,800'
 
 
-def test_stock_price_change_adjusted():
+@pytest.mark.skipif(True, reason='requires http request')
+def test_stock_price_change():
     stock = Stock(start='20230517', end='20230525')
     data = stock.stock_price_change()
 
     assert data[1975][0] == '417500'
-    assert data[1975][2] == '5252'
+    assert data[1975][2] == '5,252'
 
-
-def test_stock_price_change_no_adjusted():
     stock = Stock(start='20230517', end='20230525', adjusted_price=False)
     data = stock.stock_price_change()
 
     assert data[1975][0] == '417500'
-    assert data[1975][2] == '21000'
+    assert data[1975][2] == '21,000'
 
 
+@pytest.mark.skipif(True, reason='requires http request')
+def test_price_by_issue():
+    stock = Stock(start='20230630', end='20230707')
+    data = stock.price_by_issue('035420')  # NAVER
+
+    assert data[0][1] == 'TDD_CLSPRC'
+    assert data[1][1] == '195,000'
+
+
+@pytest.mark.skipif(True, reason='requires http request')
 def test_all_listed_issues():
-    stock = Stock('20230519')
+    stock = Stock()
     data = stock.all_listed_issues()
 
-    assert data[1][0] == 'KR7098120009'
-    assert data[1][11] == '8312766'
+    assert len(data[0]) == 12
+    assert data[0][0] == 'ISU_CD'
+    assert data[0][11] == 'LIST_SHRS'

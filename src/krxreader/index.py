@@ -8,8 +8,6 @@ class StockIndex(KrxBase):
     :param start: 조회기간
     :param end: 조회기간
     :param sector: '01': KRX, '02': KOSPI, '03': KOSDAQ, '04': 테마
-    :param share: '1': 주, '2': 천주, '3': 백만주
-    :param money: '1': 원, '2': 천원, '3': 백만원, '4': 십억원
     """
 
     def __init__(
@@ -17,15 +15,31 @@ class StockIndex(KrxBase):
             date: str | None = None,
             start: str | None = None,
             end: str | None = None,
-            sector: str = '01',
-            share: str = '2',
-            money: str = '3'
+            sector: str = '01'
     ):
         super().__init__(date, start, end)
 
         self._sector = sector
-        self._share = share
-        self._money = money
+        # '1': 주
+        # '2': 천주
+        # '3': 백만주
+        self._share = '1'
+        # '1': 원
+        # '2': 천원
+        # '3': 백만원
+        # '4': 십억원
+        self._money = '1'
+
+    def search_index(self, index_name: str) -> tuple:
+        """주가지수 검색"""
+
+        bld = 'dbms/comm/finder/finder_equidx'
+        params = {
+            'mktsel': '1',
+            'searchText': index_name
+        }
+
+        return self.search_item(bld, params)
 
     def index_price(self) -> list[list]:
         """[11001] 통계 > 기본 통계 > 지수 > 주가지수 > 전체지수 시세"""
@@ -54,10 +68,10 @@ class StockIndex(KrxBase):
 
         return self.fetch_data(bld, params)
 
-    def price_by_index(self, index_code: str) -> list[list]:
+    def price_by_index(self, index_name: str) -> list[list]:
         """[11003] 통계 > 기본 통계 > 지수 > 주가지수 > 개별지수 시세 추이"""
 
-        (item_name, item_code, full_code) = self.search_item('stock_index', index_code)
+        (item_name, item_code, full_code) = self.search_index(index_name)
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT00301'
         params = {
@@ -88,14 +102,52 @@ class StockIndex(KrxBase):
         """[11005] 통계 > 기본 통계 > 지수 > 주가지수 > 개별지수 종합정보"""
         pass
 
-    def index_consituents(self) -> list[list]:
+    def index_consituents(self, index_name: str) -> list[list]:
         """[11006] 통계 > 기본 통계 > 지수 > 주가지수 > 지수구성종목"""
-        pass
 
-    def PER_PBR_Dividend_yield(self) -> list[list]:
+        (item_name, item_code, full_code) = self.search_index(index_name)
+
+        bld = 'dbms/MDC/STAT/standard/MDCSTAT00601'
+        params = {
+            'tboxindIdx_finder_equidx0_0': item_name,
+            'indIdx': full_code,
+            'indIdx2': item_code,
+            'codeNmindIdx_finder_equidx0_0': item_name,
+            'param1indIdx_finder_equidx0_0': '',
+            'trdDd': self._date,
+            'money': self._money
+        }
+
+        return self.fetch_data(bld, params)
+
+    def per_pbr_dividend_yield(self, search_type: str = '전체지수', index_name: str = '') -> list[list]:
         """[11007] 통계 > 기본 통계 > 지수 > 주가지수 > PER/PBR/배당수익률"""
-        pass
 
+        # 전체지수
+        if search_type == '전체지수':
+            (item_name, item_code, full_code) = ('', '', '')
+            bld = 'dbms/MDC/STAT/standard/MDCSTAT00701'
+            search_code = 'A'
+        # 개별지수
+        else:
+            (item_name, item_code, full_code) = self.search_index(index_name)
+            bld = 'dbms/MDC/STAT/standard/MDCSTAT00702'
+            search_code = 'P'
+
+        params = {
+            'searchType': search_code,
+            'idxIndMidclssCd': self._sector,
+            'trdDd': self._date,
+            'tboxindTpCd_finder_equidx0_0': item_name,
+            'indTpCd': full_code,
+            'indTpCd2': item_code,
+            'codeNmindTpCd_finder_equidx0_0': item_name,
+            'param1indTpCd_finder_equidx0_0': '',
+            'strtDd': self._start,
+            'endDd': self._end
+        }
+
+        return self.fetch_data(bld, params)
 
 class BondIndex(KrxBase):
     """통계 > 기본 통계 > 지수 > 채권지수

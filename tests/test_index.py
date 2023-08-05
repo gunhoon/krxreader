@@ -9,33 +9,91 @@ from krxreader.calendar import now
 
 
 class TestStockIndex:
+    @pytest.mark.skipif(True, reason='requires http request')
+    def test_search_index(self):
+        index = StockIndex()
+
+        item = index.search_index('KRX 300')
+        assert item == ('KRX 300', '300', '5')
+
+        item = index.search_index('코스피 200')
+        assert item == ('코스피 200', '028', '1')
+
+    @pytest.mark.skipif(True, reason='requires http request')
     def test_index_price(self):
-        index = StockIndex('20230519')
+        index = StockIndex('20230804', sector='01')
         data = index.index_price()
 
         assert data[1][0] == 'KRX 300'
-        assert data[1][1] == '1533.13'
+        assert data[1][1] == '1,592.60'
 
+        index = StockIndex('20230804', sector='02')
+        data = index.index_price()
+
+        assert data[2][0] == '코스피'
+        assert data[2][1] == '2,602.80'
+
+        index = StockIndex('20230804', sector='03')
+        data = index.index_price()
+
+        assert data[2][0] == '코스닥지수'
+        assert data[2][1] == '918.43'
+
+        index = StockIndex('20230804', sector='04')
+        data = index.index_price()
+
+        assert data[1][0] == '코스피 고배당 50'
+        assert data[1][1] == '2,636.95'
+
+    @pytest.mark.skipif(True, reason='requires http request')
     def test_index_price_change(self):
-        index = StockIndex(start='20230511', end='20230519')
+        index = StockIndex(start='20230727', end='20230804')
         data = index.index_price_change()
 
         assert data[1][0] == 'KRX 300'
-        assert data[1][2] == '1533.13'
+        assert data[1][2] == '1,592.60'
 
+    @pytest.mark.skipif(True, reason='requires http request')
     def test_price_by_index(self):
-        index = StockIndex(start='20230511', end='20230519')
-        data = index.price_by_index('KTOP 30')
+        index = StockIndex(start='20230727', end='20230804')
+        data = index.price_by_index('코스닥 150')
 
-        assert data[1][0] == '2023/05/19'
-        assert data[1][1] == '8986.38'
+        assert data[0][1] == 'CLSPRC_IDX'
+        assert data[1][1] == '1,503.29'
 
+    @pytest.mark.skipif(True, reason='requires http request')
     def test_all_indices(self):
         index = StockIndex()
         data = index.all_indices()
 
+        assert len(data[0]) == 10
+        assert data[0][0] == 'IDX_NM'
+        assert data[0][9] == 'IDX_IND_CD'
+
+    @pytest.mark.skipif(True, reason='requires http request')
+    def test_index_consituents(self):
+        index = StockIndex('20230804')
+        data = index.index_consituents('KRX 300')
+
+        assert data[1][0] == '005930'
+        assert data[1][1] == '삼성전자'
+        assert data[1][2] == '68,300'
+
+    @pytest.mark.skipif(True, reason='requires http request')
+    def test_per_pbr_dividend_yield(self):
+        index = StockIndex('20230804', sector='01')
+        data = index.per_pbr_dividend_yield(search_type='전체지수')
+
         assert data[1][0] == 'KRX 300'
-        assert data[1][2] == '2010.01.04'
+        assert data[1][1] == '1,592.60'
+
+        index = StockIndex(start='20230727', end='20230804')
+        data = index.per_pbr_dividend_yield(search_type='개별지수', index_name='KRX 300')
+
+        assert data[1][0] == '2023/08/04'
+        assert data[1][1] == '1,592.60'
+        assert data[6][0] == '2023/07/28'
+        assert data[6][1] == '1,603.30'
 
 
 class TestBondIndex:

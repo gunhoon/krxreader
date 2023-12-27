@@ -3,8 +3,8 @@ import datetime
 import pytest
 
 from krxreader.base import KrxBase
-from krxreader.calendar import is_closing_day
-from krxreader.calendar import now
+from krxfetch.calendar import is_closing_day
+from krxfetch.calendar import now
 
 
 def test_date():

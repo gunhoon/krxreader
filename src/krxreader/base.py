@@ -2,10 +2,10 @@ import csv
 import datetime
 import logging
 
-from .calendar import now
-from .calendar import trading_date
-from .fetch import get_json_data
-from .fetch import download_csv
+from krxfetch.calendar import now
+from krxfetch.calendar import trading_date
+from krxfetch.fetch import get_json_data
+from krxfetch.fetch import download_csv
 
 
 class KrxBase:

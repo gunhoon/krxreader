@@ -2,27 +2,24 @@ import csv
 import datetime
 import logging
 
-from krxfetch.calendar import now
-from krxfetch.calendar import is_closing_day
-from krxfetch.calendar import trading_date
-from krxfetch.fetch import get_json_data
-from krxfetch.fetch import download_csv
+from krxfetch import calendar
+from krxfetch import fetch
 
 
-def _trading_date(dt: datetime.datetime = None, base_time: int = 0) -> str:
+def _trading_date(dt: datetime.datetime = None, base_hour: int = 0) -> str:
     """Return trading date
 
-    Return the previous date if it is the closing date or if it is before
-    base_time. For example, the trading open time(ex. 09:00).
+    Return the previous date if it is the closing date or before base_hour.
     """
     if dt is None:
-        dt = now()
+        dt = calendar.now()
 
-    # Before the base time
-    if dt.hour < base_time:
+    # Before the base hour
+    if dt.hour < base_hour:
         dt = dt - datetime.timedelta(days=1)
 
-    while is_closing_day(dt):
+    # When it is the closing date
+    while calendar.is_closing_day(dt):
         dt = dt - datetime.timedelta(days=1)
 
     date = dt.strftime('%Y%m%d')
@@ -36,7 +33,7 @@ class KrxBase:
     :param date: 조회일자
     :param start: 조회기간
     :param end: 조회기간
-    :param open_time: 날짜 계산의 기준 시간
+    :param open_hour: 날짜 계산의 기준 시간
     :param start_days: start 의 default 값
     """
 
@@ -45,25 +42,25 @@ class KrxBase:
             date: str | None = None,
             start: str | None = None,
             end: str | None = None,
-            open_time: int = 9,
+            open_hour: int = 9,
             start_days: int = 8
     ):
         self._date = date
         self._start = start
         self._end = end
 
-        now_dt = now()
+        now_date = _trading_date(dt=None, base_hour=open_hour)
 
         if self._date is None:
-            self._date = trading_date(dt=now_dt, base_time=open_time)
+            self._date = now_date
 
         if self._end is None:
-            self._end = trading_date(dt=now_dt, base_time=open_time)
+            self._end = now_date
 
         if self._start is None:
             dt = datetime.datetime.strptime(self._end, '%Y%m%d')
             dt = dt - datetime.timedelta(days=start_days)
-            self._start = trading_date(dt=dt, base_time=0)
+            self._start = _trading_date(dt=dt, base_hour=0)
 
         self._locale = 'ko_KR'
         self._csvxls_is_no = 'false'
@@ -79,7 +76,7 @@ class KrxBase:
         })
         logging.debug(payload)
 
-        dic_lst = get_json_data(payload)
+        dic_lst = fetch.get_json_data(payload)
         keys = list(dic_lst[0])
 
         data = [list(item.values()) for item in dic_lst]
@@ -99,7 +96,7 @@ class KrxBase:
         })
         logging.debug(payload)
 
-        csv_str = download_csv(payload)
+        csv_str = fetch.download_csv(payload)
 
         reader = csv.reader(csv_str.splitlines())
         data = list(reader)
@@ -119,7 +116,7 @@ class KrxBase:
         })
         logging.debug(payload)
 
-        dic_lst = get_json_data(payload)
+        dic_lst = fetch.get_json_data(payload)
         first_item = dic_lst[0]
 
         return (

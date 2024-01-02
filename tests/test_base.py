@@ -17,12 +17,12 @@ def test__trading_date():
     assert _trading_date(dt1) == '20230519'
     assert _trading_date(dt2) == '20230519'
     assert _trading_date(dt3) == '20230519'
-    assert _trading_date(dt1, base_time=9) == '20230519'
-    assert _trading_date(dt2, base_time=9) == '20230519'
-    assert _trading_date(dt3, base_time=9) == '20230519'
-    assert _trading_date(dt1, base_time=24) == '20230519'
-    assert _trading_date(dt2, base_time=24) == '20230519'
-    assert _trading_date(dt3, base_time=24) == '20230519'
+    assert _trading_date(dt1, base_hour=9) == '20230519'
+    assert _trading_date(dt2, base_hour=9) == '20230519'
+    assert _trading_date(dt3, base_hour=9) == '20230519'
+    assert _trading_date(dt1, base_hour=24) == '20230519'
+    assert _trading_date(dt2, base_hour=24) == '20230519'
+    assert _trading_date(dt3, base_hour=24) == '20230519'
 
     # 일요일
     dt4 = datetime.datetime.fromisoformat('2023-05-21 08:59:59.501235+09:00')
@@ -32,12 +32,12 @@ def test__trading_date():
     assert _trading_date(dt4) == '20230519'
     assert _trading_date(dt5) == '20230519'
     assert _trading_date(dt6) == '20230519'
-    assert _trading_date(dt4, base_time=9) == '20230519'
-    assert _trading_date(dt5, base_time=9) == '20230519'
-    assert _trading_date(dt6, base_time=9) == '20230519'
-    assert _trading_date(dt4, base_time=24) == '20230519'
-    assert _trading_date(dt5, base_time=24) == '20230519'
-    assert _trading_date(dt6, base_time=24) == '20230519'
+    assert _trading_date(dt4, base_hour=9) == '20230519'
+    assert _trading_date(dt5, base_hour=9) == '20230519'
+    assert _trading_date(dt6, base_hour=9) == '20230519'
+    assert _trading_date(dt4, base_hour=24) == '20230519'
+    assert _trading_date(dt5, base_hour=24) == '20230519'
+    assert _trading_date(dt6, base_hour=24) == '20230519'
 
     # 월요일
     dt7 = datetime.datetime.fromisoformat('2023-05-22 08:59:59.501235+09:00')
@@ -47,12 +47,12 @@ def test__trading_date():
     assert _trading_date(dt7) == '20230522'
     assert _trading_date(dt8) == '20230522'
     assert _trading_date(dt9) == '20230522'
-    assert _trading_date(dt7, base_time=9) == '20230519'
-    assert _trading_date(dt8, base_time=9) == '20230522'
-    assert _trading_date(dt9, base_time=9) == '20230522'
-    assert _trading_date(dt7, base_time=24) == '20230519'
-    assert _trading_date(dt8, base_time=24) == '20230519'
-    assert _trading_date(dt9, base_time=24) == '20230519'
+    assert _trading_date(dt7, base_hour=9) == '20230519'
+    assert _trading_date(dt8, base_hour=9) == '20230522'
+    assert _trading_date(dt9, base_hour=9) == '20230522'
+    assert _trading_date(dt7, base_hour=24) == '20230519'
+    assert _trading_date(dt8, base_hour=24) == '20230519'
+    assert _trading_date(dt9, base_hour=24) == '20230519'
 
 
 def test_date():

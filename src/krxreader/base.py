@@ -3,9 +3,31 @@ import datetime
 import logging
 
 from krxfetch.calendar import now
+from krxfetch.calendar import is_closing_day
 from krxfetch.calendar import trading_date
 from krxfetch.fetch import get_json_data
 from krxfetch.fetch import download_csv
+
+
+def _trading_date(dt: datetime.datetime = None, base_time: int = 0) -> str:
+    """Return trading date
+
+    Return the previous date if it is the closing date or if it is before
+    base_time. For example, the trading open time(ex. 09:00).
+    """
+    if dt is None:
+        dt = now()
+
+    # Before the base time
+    if dt.hour < base_time:
+        dt = dt - datetime.timedelta(days=1)
+
+    while is_closing_day(dt):
+        dt = dt - datetime.timedelta(days=1)
+
+    date = dt.strftime('%Y%m%d')
+
+    return date
 
 
 class KrxBase:

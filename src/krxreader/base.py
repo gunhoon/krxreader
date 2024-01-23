@@ -74,7 +74,7 @@ class KrxBase:
         payload.update({
             'csvxls_isNo': self._csvxls_is_no
         })
-        logging.debug(payload)
+        logging.info(payload)
 
         dic_lst = fetch.get_json_data(payload)
         keys = list(dic_lst[0])
@@ -94,7 +94,7 @@ class KrxBase:
             'name': 'fileDown',
             'url': bld
         })
-        logging.debug(payload)
+        logging.info(payload)
 
         csv_str = fetch.download_csv(payload)
 
@@ -114,7 +114,7 @@ class KrxBase:
         payload.update({
             'bld': bld
         })
-        logging.debug(payload)
+        logging.info(payload)
 
         dic_lst = fetch.get_json_data(payload)
         first_item = dic_lst[0]

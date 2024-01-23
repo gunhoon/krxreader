@@ -5,8 +5,8 @@ class Stock(KrxBase):
     """통계 > 기본 통계 > 주식
 
     :param date: 조회일자
-    :param start: 조회기간
-    :param end: 조회기간
+    :param start: 조회기간 start
+    :param end: 조회기간 end
     :param market: 'ALL': 전체, 'STK': KOSPI, 'KSQ': KOSDAQ, 'KNX': KONEX
     :param adjusted_price: 수정주가 적용
     """
@@ -50,11 +50,19 @@ class Stock(KrxBase):
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01501'
         params = {
-            'mktId': self._market,
+            'mktId': self._market
+        }
+
+        if self._market == 'KSQ':
+            params.update({
+                'segTpCd': 'ALL'
+            })
+
+        params.update({
             'trdDd': self._date,
             'share': self._share,
             'money': self._money
-        }
+        })
 
         return self.fetch_data(bld, params)
 
@@ -63,10 +71,18 @@ class Stock(KrxBase):
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01602'
         params = {
-            'mktId': self._market,
+            'mktId': self._market
+        }
+
+        if self._market == 'KSQ':
+            params.update({
+                'segTpCd': 'ALL'
+            })
+
+        params.update({
             'strtDd': self._start,
             'endDd': self._end
-        }
+        })
 
         if self._adjusted_price is True:
             params.update({
@@ -115,16 +131,5 @@ class Stock(KrxBase):
             'share': self._share,
             'money': self._money
         })
-
-        return self.fetch_data(bld, params)
-
-    def all_listed_issues(self) -> list[list]:
-        """[12005] 통계 > 기본 통계 > 주식 > 종목정보 > 전종목 기본정보"""
-
-        bld = 'dbms/MDC/STAT/standard/MDCSTAT01901'
-        params = {
-            'mktId': self._market,
-            'share': self._share
-        }
 
         return self.fetch_data(bld, params)

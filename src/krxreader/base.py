@@ -4,6 +4,7 @@ import logging
 
 from krxfetch import calendar
 from krxfetch import fetch
+from pygments.lexers import data
 
 
 def _trading_date(dt: datetime.datetime = None, base_hour: int = 0) -> str:
@@ -65,7 +66,15 @@ class KrxBase:
         self._locale = 'ko_KR'
         self._csvxls_is_no = 'false'
 
-    def fetch_json(self, bld: str, params: dict) -> list[list]:
+        self._fetch_type = 'json'   # json or csv
+
+    def set_fetch_type(self, fetch_type: str) -> None:
+        if fetch_type == 'json' or fetch_type == 'csv':
+            self._fetch_type = fetch_type
+        else:
+            raise ValueError('fetch_type must be "json" or "csv"')
+
+    def fetch_json(self, bld: str, params: dict) -> list[dict]:
         payload = {
             'bld': bld,
             'locale': self._locale
@@ -76,15 +85,11 @@ class KrxBase:
         })
         logging.info(payload)
 
-        dic_lst = fetch.get_json_data(payload)
-        keys = list(dic_lst[0])
-
-        data = [list(item.values()) for item in dic_lst]
-        data.insert(0, keys)
+        data = fetch.get_json_data(payload)
 
         return data
 
-    def fetch_csv(self, bld: str, params: dict) -> list[list]:
+    def fetch_csv(self, bld: str, params: dict) -> list[dict]:
         payload = {
             'locale': self._locale
         }
@@ -98,13 +103,20 @@ class KrxBase:
 
         csv_str = fetch.download_csv(payload)
 
-        reader = csv.reader(csv_str.splitlines())
+        reader = csv.DictReader(csv_str.splitlines())
         data = list(reader)
 
         return data
 
-    def fetch_data(self, bld: str, params: dict) -> list[list]:
-        return self.fetch_json(bld, params)
+    def fetch_data(self, bld: str, params: dict) -> list[dict]:
+        if self._fetch_type == 'json':
+            data = self.fetch_json(bld, params)
+        elif self._fetch_type == 'csv':
+            data = self.fetch_csv(bld, params)
+        else:
+            raise NotImplementedError(self._fetch_type)
+
+        return data
 
     def search_item(self, bld: str, params: dict) -> tuple:
         payload = {

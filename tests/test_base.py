@@ -109,7 +109,7 @@ def params():
 
     return {
         'mktId': 'ALL',
-        'trdDd': '20230602',
+        'trdDd': '20250813',
         'share': '1',
         'money': '1'
     }
@@ -121,8 +121,25 @@ def test_fetch_json(bld, params):
 
     data = base.fetch_json(bld, params)
 
-    assert data[1][0] == '060310'
-    assert data[1][5] == '2,875'
+    assert data[0]['ISU_SRT_CD'] == '060310'
+    assert data[0]['ISU_CD'] == 'KR7060310000'
+    assert data[0]['ISU_ABBRV'] == '3S'
+    assert data[0]['MKT_NM'] == 'KOSDAQ'
+    assert data[0]['SECT_TP_NM'] == '벤처기업부'
+    assert data[0]['TDD_CLSPRC'] == '1,876'
+    assert data[0]['FLUC_TP_CD'] == '1'
+    assert data[0]['CMPPREVDD_PRC'] == '11'
+    assert data[0]['FLUC_RT'] == '0.59'
+    assert data[0]['TDD_OPNPRC'] == '1,889'
+    assert data[0]['TDD_HGPRC'] == '1,889'
+    assert data[0]['TDD_LWPRC'] == '1,861'
+    assert data[0]['ACC_TRDVOL'] == '125,088'
+    assert data[0]['ACC_TRDVAL'] == '234,213,374'
+    assert data[0]['MKTCAP'] == '99,538,759,040'
+    assert data[0]['LIST_SHRS'] == '53,059,040'
+    assert data[0]['MKT_ID'] == 'KSQ'
+
+    assert len(data[0]) == 17
 
 
 @pytest.mark.skipif(False, reason='requires http request')
@@ -131,8 +148,22 @@ def test_fetch_csv(bld, params):
 
     data = base.fetch_csv(bld, params)
 
-    assert data[1][0] == '060310'
-    assert data[1][4] == '2875'
+    assert data[0]['종목코드'] == '060310'
+    assert data[0]['종목명'] == '3S'
+    assert data[0]['시장구분'] == 'KOSDAQ'
+    assert data[0]['소속부'] == '벤처기업부'
+    assert data[0]['종가'] == '1876'
+    assert data[0]['대비'] == '11'
+    assert data[0]['등락률'] == '0.59'
+    assert data[0]['시가'] == '1889'
+    assert data[0]['고가'] == '1889'
+    assert data[0]['저가'] == '1861'
+    assert data[0]['거래량'] == '125088'
+    assert data[0]['거래대금'] == '234213374'
+    assert data[0]['시가총액'] == '99538759040'
+    assert data[0]['상장주식수'] == '53059040'
+
+    assert len(data[0]) == 14
 
 
 @pytest.mark.skipif(False, reason='requires http request')

@@ -45,7 +45,7 @@ class Stock(KrxBase):
 
         return self.search_item(bld, params)
 
-    def stock_price(self) -> list[list]:
+    def stock_price(self) -> list[dict]:
         """[12001] 통계 > 기본 통계 > 주식 > 종목시세 > 전종목 시세"""
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01501'
@@ -66,7 +66,7 @@ class Stock(KrxBase):
 
         return self.fetch_data(bld, params)
 
-    def stock_price_change(self) -> list[list]:
+    def stock_price_change(self) -> list[dict]:
         """[12002] 통계 > 기본 통계 > 주식 > 종목시세 > 전종목 등락률"""
 
         bld = 'dbms/MDC/STAT/standard/MDCSTAT01602'
@@ -101,7 +101,7 @@ class Stock(KrxBase):
 
         return self.fetch_data(bld, params)
 
-    def price_by_issue(self, issue_code: str) -> list[list]:
+    def price_by_issue(self, issue_code: str) -> list[dict]:
         """[12003] 통계 > 기본 통계 > 주식 > 종목시세 > 개별종목 시세 추이"""
 
         (item_name, item_code, full_code) = self.search_issue(issue_code)

@@ -22,29 +22,41 @@ def test_search_issue():
 
 @pytest.mark.skipif(False, reason='requires http request')
 def test_stock_price():
-    stock = Stock('20240123', market='ALL')
+    stock = Stock('20250814', market='ALL')
     data = stock.stock_price()
 
-    assert data[1][0] == '060310'
-    assert data[1][5] == '4,100'
+    assert data[0]['ISU_SRT_CD'] == '060310'
+    assert data[0]['ISU_ABBRV'] == '3S'
+    assert data[0]['MKT_NM'] == 'KOSDAQ'
+    assert data[0]['TDD_CLSPRC'] == '1,865'
+    assert len(data[0]) == 17
 
-    stock = Stock('20240123', market='STK')
+    stock = Stock('20250814', market='STK')
     data = stock.stock_price()
 
-    assert data[1][0] == '095570'
-    assert data[1][5] == '4,690'
+    assert data[0]['ISU_SRT_CD'] == '095570'
+    assert data[0]['ISU_ABBRV'] == 'AJ네트웍스'
+    assert data[0]['MKT_NM'] == 'KOSPI'
+    assert data[0]['TDD_CLSPRC'] == '4,225'
+    assert len(data[0]) == 17
 
-    stock = Stock('20240123', market='KSQ')
+    stock = Stock('20250814', market='KSQ')
     data = stock.stock_price()
 
-    assert data[1][0] == '060310'
-    assert data[1][5] == '4,100'
+    assert data[0]['ISU_SRT_CD'] == '060310'
+    assert data[0]['ISU_ABBRV'] == '3S'
+    assert data[0]['MKT_NM'] == 'KOSDAQ'
+    assert data[0]['TDD_CLSPRC'] == '1,865'
+    assert len(data[0]) == 17
 
-    stock = Stock('20240123', market='KNX')
+    stock = Stock('20250814', market='KNX')
     data = stock.stock_price()
 
-    assert data[1][0] == '278990'
-    assert data[1][5] == '12,300'
+    assert data[0]['ISU_SRT_CD'] == '278990'
+    assert data[0]['ISU_ABBRV'] == 'EMB'
+    assert data[0]['MKT_NM'] == 'KONEX'
+    assert data[0]['TDD_CLSPRC'] == '3,100'
+    assert len(data[0]) == 17
 
 
 @pytest.mark.skipif(False, reason='requires http request')
@@ -52,23 +64,26 @@ def test_stock_price_change():
     stock = Stock(end='20240123')
     data = stock.stock_price_change()
 
-    assert data[598][0] == '192080'  # ISU_SRT_CD (종목코드)
-    assert data[598][2] == '43,358'  # BAS_PRC (시작일 기준가)
-    assert data[598][3] == '40,450'  # TDD_CLSPRC (종료일 종가)
+    assert data[597]['ISU_SRT_CD'] == '192080'  # ISU_SRT_CD (종목코드)
+    assert data[597]['BAS_PRC'] == '43,358'     # BAS_PRC (시작일 기준가)
+    assert data[597]['TDD_CLSPRC'] == '40,450'  # TDD_CLSPRC (종료일 종가)
 
     stock = Stock(end='20240123', adjusted_price=False)
     data = stock.stock_price_change()
 
-    assert data[598][0] == '192080'
-    assert data[598][2] == '51,200'
-    assert data[598][3] == '40,450'
+    assert data[597]['ISU_SRT_CD'] == '192080'
+    assert data[597]['BAS_PRC'] == '51,200'
+    assert data[597]['TDD_CLSPRC'] == '40,450'
 
 
 @pytest.mark.skipif(False, reason='requires http request')
 def test_price_by_issue():
-    stock = Stock(end='20240123')
+    stock = Stock(end='20250814')
     data = stock.price_by_issue('035420')  # NAVER
 
-    assert data[0][1] == 'TDD_CLSPRC'
-    assert data[1][1] == '218,000'
-    assert data[7][1] == '229,500'
+    assert data[0]['TDD_CLSPRC'] == '224,500'
+    assert data[1]['TDD_CLSPRC'] == '225,000'
+    assert data[6]['TDD_CLSPRC'] == '228,500'
+
+    assert len(data) == 7
+    assert len(data[0]) == 12

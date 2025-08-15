@@ -190,3 +190,13 @@ def test_search_item():
 
     item = base.search_item(bld, params)
     assert item == ('삼성전자', '005930', 'KR7005930003')
+
+    # ETF/ETN/ELW 종목 검색
+    bld = 'dbms/comm/finder/finder_secuprodisu'
+    params = {
+        'mktsel': 'ETF',
+        'searchText': 'KODEX 200'
+    }
+
+    item = base.search_item(bld, params)
+    assert item == ('KODEX 200', '069500', 'KR7069500007')

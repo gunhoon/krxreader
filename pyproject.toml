@@ -1,6 +1,6 @@
 [project]
 name = "krxreader"
-version = "0.0.2"
+version = "0.0.3"
 description = "KRXReader is a library for scraping financial data from the KRX(Korea Exchange) Market Data System."
 readme = "README.md"
 requires-python = ">=3.9"

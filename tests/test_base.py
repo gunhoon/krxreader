@@ -4,8 +4,8 @@ import pytest
 
 from krxreader.base import _trading_date
 from krxreader.base import KrxBase
-from krxfetch.calendar import is_closing_day
-from krxfetch.calendar import now
+from krxreader.calendar import is_closing_day
+from krxreader.calendar import now
 
 
 def test__trading_date():

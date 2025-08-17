@@ -2,8 +2,9 @@ import csv
 import datetime
 import logging
 
-from krxfetch import calendar
 from krxfetch import fetch
+
+from . import calendar
 
 
 def _trading_date(dt: datetime.datetime = None, base_hour: int = 0) -> str:
